@@ -16,11 +16,14 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Deploy') {
+        stage('Deploy to Tomcat') {
+            environment {
+                TOMCAT_URL = 'http://admin:admin@localhost:7000/manager/text'
+                WAR_FILE = 'target/my-app.war'
+            }
             steps {
-                // Deploy the built artifact (assuming it's a JAR file) to a server
-                // Replace user, server, and path with your actual deployment details
-                sh 'scp target/my-app.jar user@server:/path/to/deploy'
+                // Deploy the WAR file to Tomcat using curl
+                sh "curl -v -T $WAR_FILE $TOMCAT_URL --user admin:admin"
             }
         }
     }
