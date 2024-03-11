@@ -1,32 +1,26 @@
 pipeline {
-  
-    agent {
-        label 'Ansible-Node'
-    }
-    
-    tools{
-        maven "Maven-3.9.6"
-    }
-
+    agent any
     stages {
-        stage('Clone') {
-            steps {
-               git 'https://github.com/ashokitschool/maven-web-app.git'
-            }
-        }
         stage('Build') {
             steps {
-               sh 'mvn clean package'
+                // Checkout source code from GitHub
+             //   git url: 'https://github.com/your-username/your-repository.git'
+              git url: 'https://github.com/Anuradha2098/Myapplication.git'
+                // Build the project using Maven
+                sh 'mvn clean package'
             }
         }
-        
-        stage('Create Image'){
-            steps{
-               steps {
-                	script {
-                		sh 'ansible-playbook task.yml'
-                	}
-                }
+        stage('Test') {
+            steps {
+                // Run tests using Maven
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Deploy the built artifact (assuming it's a JAR file) to a server
+                // Replace user, server, and path with your actual deployment details
+                sh 'scp target/my-app.jar user@server:/path/to/deploy'
             }
         }
     }
